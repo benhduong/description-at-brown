@@ -6,24 +6,47 @@ import {
   Flex,
   Box,
   Center,
+  Button,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import React, { useState } from "react";
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // You can perform actions with the searchQuery, such as sending it to a server or updating the UI.
+    // For simplicity, we're just displaying an alert in this example.
+    alert(`Searching for: ${searchQuery}`);
+  };
+
   return (
-    <Box mt="20%" background="grey">
+    <Box mt="20%" textAlign="center">
       <Text>DAB: Search for classes below!</Text>
-      <InputGroup>
+      <InputGroup onSubmit={handleSubmit}>
         <InputLeftAddon pointerEvents="none" marginLeft="auto">
           <SearchIcon color="gray.300" />
         </InputLeftAddon>
         <Input
+          type="text"
+          id="search"
+          value={searchQuery}
+          onChange={handleChange}
+          placeholder="Enter your search query"
+          width="60%"
           marginRight="auto"
-          width="70%"
-          background="white"
-          placeholder="Search here"
+          isRequired
         />
       </InputGroup>
+      <Button colorScheme="blue" type="submit" onClick={handleSubmit}>
+        Submit
+      </Button>
     </Box>
   );
 }
