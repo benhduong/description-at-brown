@@ -26,6 +26,12 @@ function App() {
     alert(`Searching for: ${searchQuery}`);
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(event);
+    }
+  };
+
   return (
     <Box mt="20%" textAlign="center">
       <Text>DAB: Search for classes below!</Text>
@@ -41,6 +47,7 @@ function App() {
           placeholder="Enter your search query"
           width="60%"
           marginRight="auto"
+          onKeyDown={handleKeyPress}
           isRequired
         />
       </InputGroup>
