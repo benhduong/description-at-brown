@@ -1,22 +1,30 @@
-import { Input, InputGroup, InputLeftAddon, Text } from "@chakra-ui/react";
+import {
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Text,
+  Flex,
+  Box,
+  Center,
+} from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 function App() {
   return (
-    <>
-      <Text>Search for classes below!</Text>
+    <Box mt="20%" background="grey">
+      <Text>DAB: Search for classes below!</Text>
       <InputGroup>
-        <InputLeftAddon pointerEvents="none">
+        <InputLeftAddon pointerEvents="none" marginLeft="auto">
           <SearchIcon color="gray.300" />
         </InputLeftAddon>
         <Input
+          marginRight="auto"
           width="70%"
           background="white"
-          justifyContent="center"
           placeholder="Search here"
         />
       </InputGroup>
-    </>
+    </Box>
   );
 }
 
