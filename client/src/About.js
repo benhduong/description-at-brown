@@ -4,8 +4,7 @@ function About() {
   return (
     <Container mt="20%" textAlign={"center"}>
       <Heading>About</Heading>
-      <Text m="5">Created by Avi, Ben, India, and Kazen at H@B2024</Text>
-      <Box mt="15">
+      <Box mt="5">
         <Text m="5">
           Navigating the Courses@Brown website can be a challenge for any Brown
           student. Our goal is to assist students during the course search
@@ -23,6 +22,7 @@ function About() {
           provide personalized course recommendations for users.
         </Text>
       </Box>
+      <Text m="15">Created by Avi, Ben, India, and Kazen at H@B2024</Text>
     </Container>
   );
 }
