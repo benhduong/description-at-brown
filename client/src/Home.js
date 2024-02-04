@@ -50,10 +50,7 @@ function Home() {
     setSearchQuery(event.target.value);
   };
 
-  const handleSubmit = (event) => {
-    if (event != null) {
-      event.preventDefault();
-    }
+  const handleSubmit = (searchName = "") => {
 
     setRecOutput("")
     setClassList([])
@@ -68,6 +65,10 @@ function Home() {
     let searchText = searchQuery
     if (searchQuery == "") {
       searchText = "what are good courses to take"
+    }
+
+    if (searchName != "") {
+      searchText = searchName
     }
 
     // REQUEST TO GET DATA
@@ -141,6 +142,8 @@ function Home() {
     return `hsl(${(hash % 360)}, ${saturation}%, ${lightness}%)`;
   }
 
+/////////////////////////////////////////////////////////////////
+
   return (
 
     <Box>
@@ -148,7 +151,7 @@ function Home() {
     <Heading textAlign={"center"} as={"h6"} size='xs' mt={'1%'}>Helping Students Find Courses with Ease!</Heading>
 
 
-    <Box mt="8%" mb={"10%"} textAlign={"center"}>
+    <Box mt="3%" mb={"10%"} textAlign={"center"}>
 
       <InputGroup>
         <InputLeftAddon pointerEvents="none" marginLeft="auto">
@@ -166,11 +169,12 @@ function Home() {
       <Box
       mt={"10px"}
       ml={"12%"} 
-      mr={"25%"} 
+      mr={"5%"} 
       opacity={"80%"}
       display={"flex"}
       flexDirection={"row"}
       gap={"10px"}
+      flexWrap={"wrap"}
       >
 
         {history.map((someSearch) => (
@@ -193,7 +197,9 @@ function Home() {
                     <Text textAlign={"center"} onClick={() => {
                       inputBoxRef.current.value = someSearch
                       setSearchQuery(someSearch)
-                      handleSubmit()
+                      setSearchQuery(someSearch)
+                      handleSubmit(someSearch)
+                      handleSubmit(someSearch)
                     }}>{someSearch}</Text>
                     </Link>
                   </Flex>
