@@ -12,6 +12,9 @@ import React, { useState } from "react";
 
 function Home() {
 
+  let testStr = "CSCI 1550 HTML 1421 OOGA 7281"
+  let testList = testStr.match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim();})
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (event) => {
@@ -32,10 +35,9 @@ function Home() {
         {
         "input": "what are good courses to take",
         "config": {}
-    }),
-      mode: 'no-cors'
+    })
     };
-    fetch('https://7487-2620-6e-6000-3100-3d4a-1581-4dd3-4984.ngrok-free.app/rag-mongo/invoke', requestOptions)
+    fetch('https://xpomf8-ip-128-148-207-159.tunnelmole.net/rag-mongo/invoke', requestOptions)
         .then(response => response.json())
         .then(data => console.log(data));
 

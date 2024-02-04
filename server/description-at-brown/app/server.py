@@ -2,7 +2,19 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
 
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = ["*"]
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 from rag_mongo import chain as rag_mongo_chain
 
