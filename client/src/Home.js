@@ -3,6 +3,8 @@ import {
   InputGroup,
   InputLeftAddon,
   Text,
+  Button,
+  Collapse,
   Heading,
   Flex,
   Grid,
@@ -13,7 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import React, { useState, useRef} from "react";
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, CardFooter, ScaleFade} from '@chakra-ui/react'
+import { useBoolean } from '@chakra-ui/react'
 
 function Home() {
 
@@ -23,6 +26,9 @@ function Home() {
   const [recOutput, setRecOutput] = useState(""); // recommendation text
 
   const [showLoaded, setShowLoaded] = useState(false); // progress bar
+
+  const [show, setShow] = React.useState(false);
+  const handleToggle = () => setShow(!show);
 
   const cache = useRef({});
 
@@ -87,7 +93,7 @@ function Home() {
 
   // creates a unique color for each course type, MATH, APMA, etc
   // https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
-  var stringToColor = (string, saturation = 100, lightness = 75) => {
+  var stringToColor = (string, saturation = 80, lightness = 75) => {
     let hash = 0;
     for (let i = 0; i < string.length; i++) {
   hash = string.charCodeAt(i) + ((hash << 5) - hash);
@@ -111,7 +117,7 @@ function Home() {
     <Heading textAlign={"center"} as={"h6"} size='xs' mt={'1%'}>Helping Students Find Courses with Ease!</Heading>
 
 
-    <Box mt="8%" textAlign={"center"}>
+    <Box mt="8%" mb={"10%"} textAlign={"center"}>
 
       <InputGroup>
         <InputLeftAddon pointerEvents="none" marginLeft="auto">
@@ -134,11 +140,25 @@ function Home() {
 
           <Grid templateColumns={"10% 55% 25% 10%"} autoFlow="row dense">
 
-            <Text gridColumn={2}>{recOutput}</Text>
+    
+            <Box gridColumn={2}>
+            <ScaleFade initialScale={0.1} in={recOutput != ""}>
+              <Collapse startingHeight={310} in={show}>
+                <Text whiteSpace={"pre-wrap"}>{recOutput}</Text>
+              </Collapse>
+
+              <Button size="sm" onClick={handleToggle} mt="1rem"
+               display={(recOutput != "" ? 'block' : 'none')}>
+                Show {show ? "Less" : "More"}
+              </Button>
+              </ScaleFade>
+            </Box>
 
             <Flex gridColumn={3} flexDirection={"column"}>
             {classList.map((className) => (
                     <div key={className}>
+
+                        <ScaleFade initialScale={0.7} in={true}>
                         <Card ml={"10%"}>
                           <CardHeader>
                             <Heading size='md'>
@@ -153,6 +173,8 @@ function Home() {
                             </Heading>
                           </CardHeader>
                         </Card>
+
+                        </ScaleFade>
                         <br></br>
                     </div>
                 ))}
