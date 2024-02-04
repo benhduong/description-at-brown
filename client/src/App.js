@@ -27,6 +27,7 @@ function App() {
   };
 
   const handleKeyPress = (event) => {
+    console.log("test")
     if (event.key === "Enter") {
       handleSubmit(event);
     }
