@@ -14,7 +14,7 @@ import {
   CircularProgress
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import React, { useState, useRef} from "react";
+import React, { useState, useRef, useEffect} from "react";
 import { Card, CardHeader, CardBody, CardFooter, ScaleFade} from '@chakra-ui/react'
 import { useBoolean } from '@chakra-ui/react'
 
@@ -27,8 +27,16 @@ function Home() {
 
   const [showLoaded, setShowLoaded] = useState(false); // progress bar
 
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = React.useState(false); // toggles
   const handleToggle = () => setShow(!show);
+
+  const [height, setHeight] = useState(0) // height of collapse
+  const collapseRef = useRef(null)
+
+  useEffect(() => {
+    console.log(collapseRef.current.clientHeight)
+    setHeight(collapseRef.current.clientHeight)
+  })
 
   const cache = useRef({});
 
@@ -44,6 +52,9 @@ function Home() {
 
     // if someone searches then the progress bar is turned on
     setShowLoaded(true)
+
+    // if there is a new search then mimize rec text
+    setShow(false)
 
     // Default case
     let searchText = searchQuery
@@ -143,12 +154,13 @@ function Home() {
     
             <Box gridColumn={2}>
             <ScaleFade initialScale={0.1} in={recOutput != ""}>
-              <Collapse startingHeight={310} in={show}>
+              <Collapse startingHeight={305} 
+              in={show} ref={collapseRef}>
                 <Text whiteSpace={"pre-wrap"}>{recOutput}</Text>
               </Collapse>
 
               <Button size="sm" onClick={handleToggle} mt="1rem"
-               display={(recOutput != "" ? 'block' : 'none')}>
+               display={((recOutput != "" && classList.length > 1) ? 'block' : 'none')}>
                 Show {show ? "Less" : "More"}
               </Button>
               </ScaleFade>

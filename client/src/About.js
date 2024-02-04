@@ -13,7 +13,7 @@ function About() {
   return (
     <Box mt="20%" textAlign={"center"}>
       <Text>About</Text>
-      <Text>Created by Avi, Ben, and India at H@B2024</Text>
+      <Text>Created by Avi, Ben, India, and Kazen at H@B2024</Text>
     </Box>
   );
 }
