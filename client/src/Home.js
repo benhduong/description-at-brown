@@ -4,6 +4,7 @@ import {
   InputLeftAddon,
   Text,
   Button,
+  Link,
   Collapse,
   Heading,
   Flex,
@@ -11,12 +12,13 @@ import {
   Box,
   Center,
   CircularProgressLabel,
-  CircularProgress
+  CircularProgress,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import React, { useState, useRef, useEffect} from "react";
 import { Card, CardHeader, CardBody, CardFooter, ScaleFade} from '@chakra-ui/react'
 import { useBoolean } from '@chakra-ui/react'
+import { CloseIcon, AddIcon, WarningIcon } from '@chakra-ui/icons'
 
 function Home() {
 
@@ -33,6 +35,10 @@ function Home() {
   const [height, setHeight] = useState(0) // height of collapse
   const collapseRef = useRef(null)
 
+  const [history, setHistory] = useState([])
+
+  const inputBoxRef = useRef(null);
+
   useEffect(() => {
     console.log(collapseRef.current.clientHeight)
     setHeight(collapseRef.current.clientHeight)
@@ -45,7 +51,9 @@ function Home() {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    if (event != null) {
+      event.preventDefault();
+    }
 
     setRecOutput("")
     setClassList([])
@@ -78,12 +86,22 @@ function Home() {
       let res = cache.current[searchText]
 
       setRecOutput(res)
-      setClassList(res.match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim();}))
+      
+      if (res.match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g) != null) {
+        let classList = res.match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim()})
+        setClassList([...new Set(classList)])
+        let newHistory = history.concat([searchText])
+        setHistory([...new Set(newHistory)])
+      } else {
+        setClassList([])
+      }
+
       setShowLoaded(false)
+
       return
     }
 
-    fetch('https://fp74qv-ip-128-148-207-159.tunnelmole.net/rag-mongo/invoke', requestOptions)
+    fetch('https://wtg9us-ip-68-9-197-24.tunnelmole.net/rag-mongo/invoke', requestOptions)
     .then(response => response.json())
        .then(data => {
 
@@ -91,7 +109,17 @@ function Home() {
         
         // once data is found update UI with rec text and list of classes
         setRecOutput(data.output)
-        setClassList((data.output).match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim();}))
+
+        if ((data.output).match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g) != null) {
+          let classList = (data.output).match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim()})
+          setClassList([...new Set(classList)])
+
+          let newHistory = history.concat([searchText])
+          setHistory([...new Set(newHistory)])
+        } else {
+          setClassList([])
+        }
+
         setShowLoaded(false)
        });
   };
@@ -113,14 +141,6 @@ function Home() {
     return `hsl(${(hash % 360)}, ${saturation}%, ${lightness}%)`;
   }
 
-  // handles whether or not the progress bar is showing or not
-  let loadedVal = ""
-  if (showLoaded) {
-    loadedVal = <CircularProgress isIndeterminate color='orange.300' />
-  } else {
-    loadedVal = ""
-  }
-
   return (
 
     <Box>
@@ -134,7 +154,7 @@ function Home() {
         <InputLeftAddon pointerEvents="none" marginLeft="auto">
           <SearchIcon color="gray.300" />
         </InputLeftAddon>
-        <Input
+        <Input ref={inputBoxRef}
           marginRight="auto"
           width="70%"
           background="white"
@@ -143,10 +163,45 @@ function Home() {
           onKeyDown={handleKeyPress}
         />
       </InputGroup>
+      <Box
+      mt={"10px"}
+      ml={"12%"} 
+      mr={"25%"} 
+      opacity={"80%"}
+      display={"flex"}
+      flexDirection={"row"}
+      gap={"10px"}
+      >
 
+        {history.map((someSearch) => (
+        <Flex 
+                  fontSize={"12px"}
+                  flexDirection={"row"}
+                  gap={"10px"}
+                  padding={"5px 10px 5px 5px"}
+                  borderRadius={"30px 30px 30px 30px"}
+                  bg={"green.200"} 
+                  key={someSearch}
+                  >
+                    <Link>
+                    <CloseIcon ml={"10px"} mt={"1px"} onClick={() => {
+                      let newHistory = history.filter((val) => val != someSearch)
+                      setHistory(newHistory)
+                    }}></CloseIcon>
+                    </Link>
+                    <Link>
+                    <Text textAlign={"center"} onClick={() => {
+                      inputBoxRef.current.value = someSearch
+                      setSearchQuery(someSearch)
+                      handleSubmit()
+                    }}>{someSearch}</Text>
+                    </Link>
+                  </Flex>
+        ))}
+      </Box>
 
       <br></br>
-      {loadedVal}
+      {showLoaded ? <CircularProgress isIndeterminate color='orange.300'/> : <></>}
 
 
           <Grid templateColumns={"10% 55% 25% 10%"} autoFlow="row dense">
