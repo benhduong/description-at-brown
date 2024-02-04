@@ -6,16 +6,20 @@ import {
   Flex,
   Box,
   Center,
+  CircularProgressLabel,
+  CircularProgress
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import React, { useState } from "react";
 
 function Home() {
 
-  let testStr = "CSCI 1550 HTML 1421 OOGA 7281"
-  let testList = testStr.match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim();})
-
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [classList, setClassList] = useState([]); // list of classes found
+  const [recOutput, setRecOutput] = useState(""); // recommendation text
+
+  const [showLoaded, setShowLoaded] = useState(false); // progress bar
 
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
@@ -24,23 +28,34 @@ function Home() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // You can perform actions with the searchQuery, such as sending it to a server or updating the UI.
-    // For simplicity, we're just displaying an alert in this example.
-    //alert(`Searching for: ${searchQuery}`);
+    // if someone searches then the progress bar is turned on
+    setShowLoaded(true)
 
+    // Default case
+    let searchText = searchQuery
+    if (searchQuery == "") {
+      searchQuery = "what are good courses to take"
+    }
+
+    // REQUEST TO GET DATA
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(
         {
-        "input": "what are good courses to take",
+        "input": searchText,
         "config": {}
     })
     };
     fetch('https://xpomf8-ip-128-148-207-159.tunnelmole.net/rag-mongo/invoke', requestOptions)
-        .then(response => response.json())
-        .then(data => console.log(data));
-
+    .then(response => response.json())
+       .then(data => {
+        
+        // once data is found update UI with rec text and list of classes
+        setRecOutput(data.output)
+        setClassList((data.output).match(/[A-Z]{3,4} \d{4}[a-zA-Z]?/g).map(function(v){return v.trim();}))
+        setShowLoaded(false)
+       });
   };
 
   const handleKeyPress = (event) => {
@@ -48,6 +63,14 @@ function Home() {
       handleSubmit(event);
     }
   };
+
+  // handles whether or not the progress bar is showing or not
+  let loadedVal = ""
+  if (showLoaded) {
+    loadedVal = <CircularProgress isIndeterminate color='orange.300' />
+  } else {
+    loadedVal = ""
+  }
 
   return (
     <Box mt="20%" textAlign={"center"}>
@@ -65,6 +88,15 @@ function Home() {
           onKeyDown={handleKeyPress}
         />
       </InputGroup>
+
+
+      <br></br>
+      {loadedVal}
+      <Text>{recOutput}</Text>
+      <br></br>
+      <Text>{classList}</Text>
+
+
     </Box>
   );
 }
